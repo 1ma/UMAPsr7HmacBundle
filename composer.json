@@ -1,0 +1,30 @@
+{
+    "name": "uma/psr7-hmac-bundle",
+    "description": "Clean integration between Psr7Hmac and the Symfony Security component",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "keywords": ["http", "psr7", "hmac"],
+    "homepage": "https://github.com/1ma/UMAPsr7HmacBundle",
+    "support": {
+        "issues": "https://github.com/1ma/UMAPsr7HmacBundle/issues",
+        "source": "https://github.com/1ma/UMAPsr7HmacBundle"
+    },
+    "require": {
+        "php": ">=5.5.0",
+
+        "symfony/framework-bundle": "^2.8|^3.0",
+        "symfony/psr-http-message-bridge": "^0.2.0",
+        "uma/psr7-hmac": "^0.5.0",
+        "zendframework/zend-diactoros": "^1.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "UMA\\Psr7HmacBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "UMA\\Tests\\Psr7HmacBundle\\": "tests/"
+        }
+    }
+}
