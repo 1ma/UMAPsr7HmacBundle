@@ -7,7 +7,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
-class UmaPsr7HmacExtension extends Extension
+class UMAPsr7HmacExtension extends Extension
 {
     /**
      * {@inheritdoc}
