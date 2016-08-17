@@ -2,7 +2,7 @@
 
 namespace UMA\Psr7HmacBundle\Definition;
 
-interface ApiClientInterface
+interface HmacApiClientInterface
 {
     /**
      * @return string
