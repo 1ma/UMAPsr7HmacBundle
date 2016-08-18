@@ -10,12 +10,12 @@ use Symfony\Component\Security\Core\Exception\AuthenticationServiceException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use UMA\Psr7Hmac\Verifier;
 use UMA\Psr7HmacBundle\Definition\HmacApiUserInterface;
-use UMA\Psr7HmacBundle\Diactoros\Psr7Transformer;
+use UMA\Psr7HmacBundle\Psr7\RequestTransformer;
 
 class HmacProvider implements AuthenticationProviderInterface
 {
     /**
-     * @var Psr7Transformer
+     * @var RequestTransformer
      */
     private $transformer;
 
@@ -35,12 +35,12 @@ class HmacProvider implements AuthenticationProviderInterface
     private $verifier;
 
     /**
-     * @param Psr7Transformer       $transformer
+     * @param RequestTransformer    $transformer
      * @param RequestStack          $requestStack
      * @param UserProviderInterface $userProvider
      * @param Verifier              $verifier
      */
-    public function __construct(Psr7Transformer $transformer, RequestStack $requestStack, UserProviderInterface $userProvider, Verifier $verifier)
+    public function __construct(RequestTransformer $transformer, RequestStack $requestStack, UserProviderInterface $userProvider, Verifier $verifier)
     {
         $this->transformer = $transformer;
         $this->requestStack = $requestStack;
@@ -60,7 +60,7 @@ class HmacProvider implements AuthenticationProviderInterface
             throw new AuthenticationServiceException('the injected UserProvider must provide HmacApiUserInterface instances');
         }
 
-        $psr7Request = $this->transformer->transform(
+        $psr7Request = $this->transformer->toPsr7(
             $this->requestStack->getMasterRequest()
         );
 

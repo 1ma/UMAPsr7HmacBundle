@@ -2,4 +2,30 @@
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="uma.request_transformer"
+                 class="UMA\Psr7HmacBundle\Psr7\RequestTransformer"
+                 public="false"
+        />
+        <service id="uma.verifier"
+                 class="UMA\Psr7Hmac\Verifier"
+                 public="false"
+        />
+        <service id="uma.hmac.security.authentication.listener"
+                 class="UMA\Psr7HmacBundle\Security\Firewall\HmacListener"
+                 public="false"
+        >
+            <argument type="service" id="security.authentication.manager"/>
+            <argument type="service" id="security.token_storage"/>
+        </service>
+        <service id="uma.hmac.security.authentication.provider"
+                 class="UMA\Psr7HmacBundle\Security\Authentication\HmacProvider"
+                 public="false"
+        >
+            <argument type="service" id="uma.request_transformer"/>
+            <argument type="service" id="request_stack"/>
+            <argument/> <!-- User Provider -->
+            <argument type="service" id="uma.verifier"/>
+        </service>
+    </services>
 </container>

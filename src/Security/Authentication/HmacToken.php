@@ -4,6 +4,7 @@ namespace UMA\Psr7HmacBundle\Security\Authentication;
 
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationServiceException;
+use Symfony\Component\Security\Core\User\UserInterface;
 use UMA\Psr7HmacBundle\Definition\HmacApiUserInterface;
 
 class HmacToken implements TokenInterface
@@ -55,6 +56,8 @@ class HmacToken implements TokenInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @return HmacApiUserInterface|null
      */
     public function getUser()
     {
@@ -163,8 +166,8 @@ class HmacToken implements TokenInterface
     {
         return serialize(
             array(
+                $this->apiKey,
                 is_object($this->apiUser) ? clone $this->apiUser : $this->apiUser,
-                $this->authenticated,
                 $this->attributes,
             )
         );
@@ -175,7 +178,9 @@ class HmacToken implements TokenInterface
      */
     public function unserialize($serialized)
     {
-        list($this->apiUser, $this->authenticated, $this->attributes) = unserialize($serialized);
+        list($this->apiKey, $this->apiUser, $this->attributes) = unserialize($serialized);
+
+        $this->authenticated = $this->apiUser instanceof UserInterface;
     }
 
     /**

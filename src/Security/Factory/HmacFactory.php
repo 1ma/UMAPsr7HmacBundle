@@ -5,6 +5,8 @@ namespace UMA\Psr7HmacBundle\Security\Factory;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\SecurityFactoryInterface;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\DefinitionDecorator;
+use Symfony\Component\DependencyInjection\Reference;
 
 class HmacFactory implements SecurityFactoryInterface
 {
@@ -13,7 +15,17 @@ class HmacFactory implements SecurityFactoryInterface
      */
     public function create(ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint)
     {
-        // TODO: Implement create() method.
+        $providerId = 'security.authentication.provider.hmac.'.$id;
+        $container
+            ->setDefinition($providerId, new DefinitionDecorator('uma.hmac.security.authentication.provider'))
+            ->replaceArgument(2, new Reference($userProvider));
+
+        $listenerId = 'security.authentication.listener.hmac.'.$id;
+        $container->setDefinition(
+            $listenerId, new DefinitionDecorator('uma.hmac.security.authentication.listener')
+        );
+
+        return [$providerId, $listenerId, $defaultEntryPoint];
     }
 
     /**
@@ -29,7 +41,7 @@ class HmacFactory implements SecurityFactoryInterface
      */
     public function getKey()
     {
-        return 'psr7_hmac';
+        return 'hmac';
     }
 
     /**

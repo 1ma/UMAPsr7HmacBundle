@@ -41,7 +41,7 @@ class HmacListener implements ListenerInterface
 
         try {
             if (null === $apiKey = $request->headers->get('Api-Key')) {
-                throw new AuthenticationCredentialsNotFoundException('Missing Api key header');
+                throw new AuthenticationCredentialsNotFoundException('Request is missing the API key HTTP header');
             }
 
             $this->tokenStorage->setToken(
