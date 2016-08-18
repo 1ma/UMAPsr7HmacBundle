@@ -15,6 +15,12 @@ class RequestTransformer
      */
     public function toPsr7(Request $request)
     {
+        // Prevent DiactorosFactory::createRequest from locking
+        // the content out from subsequent Request client code. This hack
+        // is needed until https://github.com/symfony/symfony/pull/19549
+        // finds its way into a future Symfony release.
+        $request->getContent();
+
         return (new DiactorosFactory())
             ->createRequest($request);
     }
