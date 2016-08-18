@@ -4,6 +4,8 @@ namespace UMA\Psr7HmacBundle\Security\Authentication;
 
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationServiceException;
+use Symfony\Component\Security\Core\Role\Role;
+use Symfony\Component\Security\Core\Role\RoleInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use UMA\Psr7HmacBundle\Definition\HmacApiUserInterface;
 
@@ -25,6 +27,11 @@ class HmacToken implements TokenInterface
     private $authenticated = false;
 
     /**
+     * @var Role[]
+     */
+    private $roles = [];
+
+    /**
      * @var mixed[]
      */
     private $attributes = [];
@@ -42,8 +49,7 @@ class HmacToken implements TokenInterface
      */
     public function getRoles()
     {
-        return null !== $this->getUser() ?
-            $this->getUser()->getRoles() : [];
+        return $this->roles;
     }
 
     /**
@@ -78,6 +84,7 @@ class HmacToken implements TokenInterface
         }
 
         $this->apiUser = $apiUser;
+        $this->roles = $this->objectifyRoles($this->apiUser);
         $this->setAuthenticated(true);
     }
 
@@ -168,6 +175,7 @@ class HmacToken implements TokenInterface
             array(
                 $this->apiKey,
                 is_object($this->apiUser) ? clone $this->apiUser : $this->apiUser,
+                $this->roles,
                 $this->attributes,
             )
         );
@@ -178,7 +186,7 @@ class HmacToken implements TokenInterface
      */
     public function unserialize($serialized)
     {
-        list($this->apiKey, $this->apiUser, $this->attributes) = unserialize($serialized);
+        list($this->apiKey, $this->apiUser, $this->roles, $this->attributes) = unserialize($serialized);
 
         $this->authenticated = $this->apiUser instanceof UserInterface;
     }
@@ -195,5 +203,27 @@ class HmacToken implements TokenInterface
             json_encode($this->isAuthenticated()),
             implode(', ', $this->getRoles())
         );
+    }
+
+    /**
+     * @param UserInterface $user
+     *
+     * @return Role[]
+     */
+    private function objectifyRoles(UserInterface $user)
+    {
+        $roles = [];
+
+        foreach ($user->getRoles() as $role) {
+            if (is_string($role)) {
+                $role = new Role($role);
+            } elseif (!$role instanceof RoleInterface) {
+                throw new \InvalidArgumentException(sprintf('User roles must be an array of strings, or RoleInterface instances, but got %s.', gettype($role)));
+            }
+
+            $roles[] = $role;
+        }
+
+        return $roles;
     }
 }
