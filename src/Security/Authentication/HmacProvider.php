@@ -7,9 +7,10 @@ use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProvid
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\AuthenticationServiceException;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use UMA\Psr7Hmac\Verifier;
-use UMA\Psr7HmacBundle\Definition\HmacApiUserInterface;
+use UMA\Psr7HmacBundle\Definition\HmacApiClientInterface;
 use UMA\Psr7HmacBundle\Psr7\RequestTransformer;
 
 class HmacProvider implements AuthenticationProviderInterface
@@ -56,8 +57,8 @@ class HmacProvider implements AuthenticationProviderInterface
         $apiUser = $this->userProvider
             ->loadUserByUsername($token->getUsername());
 
-        if (!$apiUser instanceof HmacApiUserInterface) {
-            throw new AuthenticationServiceException('the injected UserProvider must provide HmacApiUserInterface instances');
+        if (!$apiUser instanceof UserInterface || !$apiUser instanceof HmacApiClientInterface) {
+            throw new AuthenticationServiceException('the injected UserProvider must provide user objects that implement both the UserInterface and HmacApiClientInterface');
         }
 
         $psr7Request = $this->transformer->toPsr7(

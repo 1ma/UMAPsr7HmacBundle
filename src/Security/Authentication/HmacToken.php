@@ -7,7 +7,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationServiceException;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\Role\RoleInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use UMA\Psr7HmacBundle\Definition\HmacApiUserInterface;
+use UMA\Psr7HmacBundle\Definition\HmacApiClientInterface;
 
 class HmacToken implements TokenInterface
 {
@@ -17,9 +17,9 @@ class HmacToken implements TokenInterface
     private $apiKey;
 
     /**
-     * @var HmacApiUserInterface
+     * @var UserInterface|HmacApiClientInterface|null
      */
-    private $apiUser = null;
+    private $user = null;
 
     /**
      * @var bool
@@ -63,28 +63,28 @@ class HmacToken implements TokenInterface
     /**
      * {@inheritdoc}
      *
-     * @return HmacApiUserInterface|null
+     * @return UserInterface|HmacApiClientInterface|null
      */
     public function getUser()
     {
-        return $this->apiUser;
+        return $this->user;
     }
 
     /**
-     * @param HmacApiUserInterface $apiUser
+     * @param UserInterface|HmacApiClientInterface $user
      */
-    public function setUser($apiUser)
+    public function setUser($user)
     {
-        if (!$apiUser instanceof HmacApiUserInterface) {
-            throw new AuthenticationServiceException('$user must be an instanceof HmacApiUserInterface');
+        if (!$user instanceof UserInterface || !$user instanceof HmacApiClientInterface) {
+            throw new AuthenticationServiceException('$user must implement both the UserInterface and the HmacApiClientInterface');
         }
 
-        if ($apiUser->getApiKey() !== $this->apiKey) {
+        if ($user->getApiKey() !== $this->apiKey) {
             throw new AuthenticationServiceException('the user api key must match the one from the token');
         }
 
-        $this->apiUser = $apiUser;
-        $this->roles = $this->objectifyRoles($this->apiUser);
+        $this->user = $user;
+        $this->roles = $this->objectifyRoles($this->user);
         $this->setAuthenticated(true);
     }
 
@@ -174,7 +174,7 @@ class HmacToken implements TokenInterface
         return serialize(
             array(
                 $this->apiKey,
-                is_object($this->apiUser) ? clone $this->apiUser : $this->apiUser,
+                is_object($this->user) ? clone $this->user : $this->user,
                 $this->roles,
                 $this->attributes,
             )
@@ -186,9 +186,9 @@ class HmacToken implements TokenInterface
      */
     public function unserialize($serialized)
     {
-        list($this->apiKey, $this->apiUser, $this->roles, $this->attributes) = unserialize($serialized);
+        list($this->apiKey, $this->user, $this->roles, $this->attributes) = unserialize($serialized);
 
-        $this->authenticated = $this->apiUser instanceof UserInterface;
+        $this->authenticated = $this->user instanceof UserInterface;
     }
 
     /**
