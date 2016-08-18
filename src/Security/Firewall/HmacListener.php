@@ -2,6 +2,9 @@
 
 namespace UMA\Psr7HmacBundle\Security\Firewall;
 
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -23,13 +26,20 @@ class HmacListener implements ListenerInterface
     private $tokenStorage;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @param AuthenticationManagerInterface $authManager
      * @param TokenStorageInterface          $tokenStorage
+     * @param LoggerInterface|null           $logger
      */
-    public function __construct(AuthenticationManagerInterface $authManager, TokenStorageInterface $tokenStorage)
+    public function __construct(AuthenticationManagerInterface $authManager, TokenStorageInterface $tokenStorage, LoggerInterface $logger = null)
     {
         $this->authManager = $authManager;
         $this->tokenStorage = $tokenStorage;
+        $this->logger = $logger;
     }
 
     /**
@@ -48,7 +58,14 @@ class HmacListener implements ListenerInterface
                 $this->authManager->authenticate(new HmacToken($apiKey))
             );
         } catch (AuthenticationException $e) {
-            // TODO we'll see...
+            if (null !== $this->logger) {
+                $this->logger->info('Hmac authentication failed.', ['exception' => $e]);
+            }
+
+            // TODO let the bundle user provide the response. Someway, somehow.
+            $event->setResponse(
+                new JsonResponse('Unauthorized request', Response::HTTP_UNAUTHORIZED)
+            );
         }
     }
 }
