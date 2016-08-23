@@ -1,0 +1,11 @@
+security:
+    providers:
+        hmac_provider:
+            id: provider.test_user
+
+    firewalls:
+        default:
+            pattern: ^/
+            hmac: true
+            provider: hmac_provider
+            stateless: true

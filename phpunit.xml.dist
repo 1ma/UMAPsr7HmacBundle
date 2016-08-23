@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.8/phpunit.xsd"
+         backupGlobals="false"
+         colors="true"
+         bootstrap="tests/TestProject/app/autoload.php"
+>
+    <php>
+        <ini name="error_reporting" value="-1" />
+        <server name="KERNEL_DIR" value="tests/TestProject/app/" />
+    </php>
+
+    <testsuites>
+        <testsuite name="UMAPsr7HmacBundle Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <logging>
+        <log type="coverage-clover" target="build/logs/clover.xml"/>
+    </logging>
+
+    <filter>
+        <whitelist>
+            <directory>src</directory>
+            <exclude>
+                <directory>src/Resources</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>

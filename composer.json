@@ -19,6 +19,11 @@
         "uma/psr7-hmac": "^0.5.0",
         "zendframework/zend-diactoros": "^1.3"
     },
+    "require-dev": {
+        "guzzlehttp/guzzle": "^6.2",
+        "symfony/framework-bundle": "^2.7|^3.0",
+        "symfony/yaml": "^2.7|^3.0"
+    },
     "autoload": {
         "psr-4": {
             "UMA\\Psr7HmacBundle\\": "src/"
@@ -26,7 +31,11 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "UMA\\Tests\\Psr7HmacBundle\\": "tests/"
-        }
+            "TestProject\\": "tests/TestProject/src/",
+            "UMA\\Tests\\Psr7HmacBundle\\": "tests/Functional"
+        },
+        "classmap": [
+            "tests/TestProject/app/TestKernel.php"
+        ]
     }
 }
