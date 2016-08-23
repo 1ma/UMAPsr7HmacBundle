@@ -5,5 +5,5 @@ services:
     ports:
       - '2222:22'
     volumes:
-      - .:/root/Psr7Hmac
-    working_dir: /root/Psr7Hmac
+      - .:/root/UMAPsr7HmacBundle
+    working_dir: /root/UMAPsr7HmacBundle
