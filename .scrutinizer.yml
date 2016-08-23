@@ -1,0 +1,15 @@
+filter:
+  excluded_paths:
+    - 'tests/*'
+checks:
+  php: true
+coding_style:
+  php: {  }
+build:
+  tests:
+    override:
+      -
+        command: 'wget https://phar.phpunit.de/phpunit-old.phar && php phpunit-old.phar'
+        coverage:
+          file: 'build/logs/clover.xml'
+          format: 'clover'
