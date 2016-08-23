@@ -62,7 +62,6 @@ class HmacListener implements ListenerInterface
                 $this->logger->info('Hmac authentication failed.', ['exception' => $e]);
             }
 
-            // TODO let the bundle user provide the response. Someway, somehow.
             $event->setResponse(
                 new JsonResponse('Unauthorized request', Response::HTTP_UNAUTHORIZED)
             );
