@@ -2,6 +2,9 @@
 
 Clean integration between the [Psr7Hmac](https://github.com/1ma/Psr7Hmac) authentication library and the Symfony [Security Component](http://symfony.com/doc/current/security.html).
 
+[![Build Status](https://travis-ci.org/1ma/UMAPsr7HmacBundle.svg?branch=master)](https://travis-ci.org/1ma/UMAPsr7HmacBundle) [![Code Coverage](https://scrutinizer-ci.com/g/1ma/UMAPsr7HmacBundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/1ma/UMAPsr7HmacBundle/?branch=master) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/1ma/UMAPsr7HmacBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/1ma/UMAPsr7HmacBundle/?branch=master) [![Code Climate](https://codeclimate.com/github/1ma/UMAPsr7HmacBundle/badges/gpa.svg)](https://codeclimate.com/github/1ma/UMAPsr7HmacBundle) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/8940fbf1-1197-43fc-aea9-2b441d8fe231/mini.png)](https://insight.sensiolabs.com/projects/8940fbf1-1197-43fc-aea9-2b441d8fe231)
+
+
 ## Setup
 
 Add [`uma/psr7-hmac-bundle`](https://packagist.org/packages/uma/psr7-hmac-bundle) to your `composer.json` file:
