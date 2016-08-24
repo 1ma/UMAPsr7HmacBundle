@@ -12,6 +12,9 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        return new TreeBuilder();
+        $treeBuilder = new TreeBuilder();
+        $treeBuilder->root('uma_psr7hmac');
+
+        return $treeBuilder;
     }
 }
