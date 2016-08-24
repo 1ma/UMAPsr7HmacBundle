@@ -133,7 +133,7 @@ security:
             security: false
         api:
             pattern: ^/
-            hmac: true
+            hmac: ~
             provider: provider.api_user
             # this flag is mandatory because persistent sessions do not make 
             # any sense in the context of HMAC authentication

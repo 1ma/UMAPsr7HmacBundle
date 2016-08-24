@@ -21,9 +21,9 @@ class HmacFactory implements SecurityFactoryInterface
             ->replaceArgument(2, new Reference($userProvider));
 
         $listenerId = 'security.authentication.listener.hmac.'.$id;
-        $container->setDefinition(
-            $listenerId, new DefinitionDecorator('uma.hmac.security.authentication.listener')
-        );
+        $container
+            ->setDefinition($listenerId, new DefinitionDecorator('uma.hmac.security.authentication.listener'))
+            ->replaceArgument(0, $config['apikey_header']);
 
         return [$providerId, $listenerId, $defaultEntryPoint];
     }
@@ -49,5 +49,9 @@ class HmacFactory implements SecurityFactoryInterface
      */
     public function addConfiguration(NodeDefinition $builder)
     {
+        $builder
+            ->children()
+            ->scalarNode('apikey_header')->defaultValue('Api-Key')
+            ->end();
     }
 }

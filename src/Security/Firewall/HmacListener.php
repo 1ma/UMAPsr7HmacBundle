@@ -16,6 +16,11 @@ use UMA\Psr7HmacBundle\Security\Authentication\HmacToken;
 class HmacListener implements ListenerInterface
 {
     /**
+     * @var string
+     */
+    private $apiKeyHeader;
+
+    /**
      * @var AuthenticationManagerInterface
      */
     private $authManager;
@@ -31,12 +36,14 @@ class HmacListener implements ListenerInterface
     private $logger;
 
     /**
+     * @param string                         $apiKeyHeader
      * @param AuthenticationManagerInterface $authManager
      * @param TokenStorageInterface          $tokenStorage
      * @param LoggerInterface|null           $logger
      */
-    public function __construct(AuthenticationManagerInterface $authManager, TokenStorageInterface $tokenStorage, LoggerInterface $logger = null)
+    public function __construct($apiKeyHeader, AuthenticationManagerInterface $authManager, TokenStorageInterface $tokenStorage, LoggerInterface $logger = null)
     {
+        $this->apiKeyHeader = $apiKeyHeader;
         $this->authManager = $authManager;
         $this->tokenStorage = $tokenStorage;
         $this->logger = $logger;
@@ -50,7 +57,7 @@ class HmacListener implements ListenerInterface
         $request = $event->getRequest();
 
         try {
-            if (null === $apiKey = $request->headers->get('Api-Key')) {
+            if (null === $apiKey = $request->headers->get($this->apiKeyHeader)) {
                 throw new AuthenticationCredentialsNotFoundException('Request is missing the API key HTTP header');
             }
 

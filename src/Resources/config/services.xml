@@ -15,6 +15,7 @@
                  class="UMA\Psr7HmacBundle\Security\Firewall\HmacListener"
                  public="false"
         >
+            <argument/> <!-- Api-Key header -->
             <argument type="service" id="security.authentication.manager"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="logger" on-invalid="null"/>

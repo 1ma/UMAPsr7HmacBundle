@@ -6,6 +6,6 @@ security:
     firewalls:
         default:
             pattern: ^/
-            hmac: true
+            hmac: ~
             provider: hmac_provider
             stateless: true
