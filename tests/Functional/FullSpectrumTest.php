@@ -17,7 +17,7 @@ class FullSpectrumTest extends \PHPUnit_Framework_TestCase
      */
     public function authenticatedRequest()
     {
-        $request = new ServerRequest('GET', 'http://testproject.com', ['Api-Key' => TestUser::TEST_APIKEY]);
+        $request = new ServerRequest('GET', 'http://testproject.com', ['X-Api-Key' => TestUser::TEST_APIKEY]);
 
         $signedRequest = (new Signer(TestUser::TEST_SECRET))->sign($request);
 
@@ -41,14 +41,14 @@ class FullSpectrumTest extends \PHPUnit_Framework_TestCase
 
         $sfResponse = $this->doRequest($sfRequest);
 
-        $this->assertSame(401, $sfResponse->getStatusCode());
+        $this->assertSame(402, $sfResponse->getStatusCode());
     }
 
     public function unauthorizedRequestProvider()
     {
         $baseRequest = new ServerRequest('GET', 'localhost:8000');
-        $withApiKey = $baseRequest->withHeader('Api-Key', TestUser::TEST_APIKEY);
-        $withBadApiKey = $baseRequest->withHeader('Api-Key', 'made-up-key');
+        $withApiKey = $baseRequest->withHeader('X-Api-Key', TestUser::TEST_APIKEY);
+        $withBadApiKey = $baseRequest->withHeader('X-Api-Key', 'made-up-key');
         $signedBaseRequest = (new Signer(TestUser::TEST_SECRET))->sign($baseRequest);
 
         return [

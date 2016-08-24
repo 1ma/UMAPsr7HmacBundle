@@ -6,6 +6,8 @@ security:
     firewalls:
         default:
             pattern: ^/
-            hmac: ~
+            hmac:
+                apikey_header: 'X-Api-Key'
+            entry_point: testapp.entry_point
             provider: hmac_provider
             stateless: true

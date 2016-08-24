@@ -10,6 +10,7 @@ use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterfac
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 use UMA\Psr7HmacBundle\Security\Authentication\HmacToken;
 
@@ -31,21 +32,28 @@ class HmacListener implements ListenerInterface
     private $tokenStorage;
 
     /**
+     * @var AuthenticationEntryPointInterface|null
+     */
+    private $entryPoint;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
 
     /**
-     * @param string                         $apiKeyHeader
-     * @param AuthenticationManagerInterface $authManager
-     * @param TokenStorageInterface          $tokenStorage
-     * @param LoggerInterface|null           $logger
+     * @param string                                 $apiKeyHeader
+     * @param AuthenticationManagerInterface         $authManager
+     * @param TokenStorageInterface                  $tokenStorage
+     * @param AuthenticationEntryPointInterface|null $entryPoint
+     * @param LoggerInterface|null                   $logger
      */
-    public function __construct($apiKeyHeader, AuthenticationManagerInterface $authManager, TokenStorageInterface $tokenStorage, LoggerInterface $logger = null)
+    public function __construct($apiKeyHeader, AuthenticationManagerInterface $authManager, TokenStorageInterface $tokenStorage, AuthenticationEntryPointInterface $entryPoint = null, LoggerInterface $logger = null)
     {
         $this->apiKeyHeader = $apiKeyHeader;
         $this->authManager = $authManager;
         $this->tokenStorage = $tokenStorage;
+        $this->entryPoint = $entryPoint;
         $this->logger = $logger;
     }
 
@@ -69,9 +77,11 @@ class HmacListener implements ListenerInterface
                 $this->logger->info('Hmac authentication failed.', ['exception' => $e]);
             }
 
-            $event->setResponse(
-                new JsonResponse('Unauthorized request', Response::HTTP_UNAUTHORIZED)
-            );
+            $response = null !== $this->entryPoint ?
+                $this->entryPoint->start($request, $e) :
+                new JsonResponse('Unauthorized request', Response::HTTP_UNAUTHORIZED);
+
+            $event->setResponse($response);
         }
     }
 }

@@ -18,6 +18,7 @@
             <argument/> <!-- Api-Key header -->
             <argument type="service" id="security.authentication.manager"/>
             <argument type="service" id="security.token_storage"/>
+            <argument/> <!-- Entry Point -->
             <argument type="service" id="logger" on-invalid="null"/>
         </service>
         <service id="uma.hmac.security.authentication.provider"

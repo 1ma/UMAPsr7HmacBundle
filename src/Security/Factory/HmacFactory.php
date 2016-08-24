@@ -5,8 +5,10 @@ namespace UMA\Psr7HmacBundle\Security\Factory;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\SecurityFactoryInterface;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
+use UMA\Psr7Hmac\Inspector\InspectorInterface;
 
 class HmacFactory implements SecurityFactoryInterface
 {
@@ -23,7 +25,8 @@ class HmacFactory implements SecurityFactoryInterface
         $listenerId = 'security.authentication.listener.hmac.'.$id;
         $container
             ->setDefinition($listenerId, new DefinitionDecorator('uma.hmac.security.authentication.listener'))
-            ->replaceArgument(0, $config['apikey_header']);
+            ->replaceArgument(0, $config['apikey_header'])
+            ->replaceArgument(3, new Reference($defaultEntryPoint, ContainerInterface::NULL_ON_INVALID_REFERENCE));
 
         return [$providerId, $listenerId, $defaultEntryPoint];
     }

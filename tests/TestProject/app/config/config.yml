@@ -6,8 +6,9 @@ framework:
         resource: "%kernel.root_dir%/config/routing.yml"
         strict_requirements: ~
     secret: "very secret indeed"
-    test: ~
 
 services:
     provider.test_user:
         class: TestProject\AppBundle\Security\TestUserProvider
+    testapp.entry_point:
+        class: TestProject\AppBundle\Security\CustomEntryPoint
