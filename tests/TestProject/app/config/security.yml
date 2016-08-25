@@ -1,7 +1,7 @@
 security:
     providers:
-        hmac_provider:
-            id: provider.test_user
+        default_provider:
+            id: testapp.provider.test_user
 
     firewalls:
         default:
@@ -9,5 +9,5 @@ security:
             hmac:
                 apikey_header: 'X-Api-Key'
             entry_point: testapp.entry_point
-            provider: hmac_provider
+            provider: default_provider
             stateless: true

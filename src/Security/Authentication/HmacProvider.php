@@ -61,9 +61,11 @@ class HmacProvider implements AuthenticationProviderInterface
             throw new AuthenticationServiceException('the injected UserProvider must provide user objects that implement both the UserInterface and HmacApiClientInterface');
         }
 
-        $psr7Request = $this->transformer->toPsr7(
-            $this->requestStack->getMasterRequest()
-        );
+        if (null === $request = $this->requestStack->getMasterRequest()) {
+            throw new AuthenticationServiceException('HmacProvider::authenticate was called outside the scope of an HTTP request handling');
+        }
+
+        $psr7Request = $this->transformer->toPsr7($request);
 
         if (!$this->verifier->verify($psr7Request, $apiUser->getSharedSecret())) {
             throw new AuthenticationException('the HMAC authentication failed');

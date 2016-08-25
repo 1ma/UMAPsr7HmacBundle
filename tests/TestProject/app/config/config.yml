@@ -8,7 +8,7 @@ framework:
     secret: "very secret indeed"
 
 services:
-    provider.test_user:
+    testapp.provider.test_user:
         class: TestProject\AppBundle\Security\TestUserProvider
     testapp.entry_point:
         class: TestProject\AppBundle\Security\CustomEntryPoint

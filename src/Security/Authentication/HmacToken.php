@@ -117,7 +117,7 @@ class HmacToken implements TokenInterface
      */
     public function eraseCredentials()
     {
-        if (null !== $this->getUser()) {
+        if (null !== $this->getUser() && $this->getUser() instanceof UserInterface) {
             $this->getUser()->eraseCredentials();
         }
     }

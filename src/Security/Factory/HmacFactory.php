@@ -3,12 +3,12 @@
 namespace UMA\Psr7HmacBundle\Security\Factory;
 
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\SecurityFactoryInterface;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
-use UMA\Psr7Hmac\Inspector\InspectorInterface;
 
 class HmacFactory implements SecurityFactoryInterface
 {
@@ -49,12 +49,14 @@ class HmacFactory implements SecurityFactoryInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @param ArrayNodeDefinition $builder
      */
     public function addConfiguration(NodeDefinition $builder)
     {
         $builder
             ->children()
-            ->scalarNode('apikey_header')->defaultValue('Api-Key')
+                ->scalarNode('apikey_header')->defaultValue('Api-Key')->end()
             ->end();
     }
 }
