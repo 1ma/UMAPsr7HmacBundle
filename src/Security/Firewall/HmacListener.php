@@ -3,7 +3,6 @@
 namespace UMA\Psr7HmacBundle\Security\Firewall;
 
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
@@ -79,7 +78,7 @@ class HmacListener implements ListenerInterface
 
             $response = null !== $this->entryPoint ?
                 $this->entryPoint->start($request, $e) :
-                new JsonResponse('Unauthorized request', Response::HTTP_UNAUTHORIZED);
+                new Response('Unauthorized request', Response::HTTP_UNAUTHORIZED);
 
             $event->setResponse($response);
         }
