@@ -7,8 +7,10 @@ use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
+use UMA\Psr7Hmac\Verifier;
 
 class HmacFactory implements SecurityFactoryInterface
 {
@@ -27,6 +29,18 @@ class HmacFactory implements SecurityFactoryInterface
             ->setDefinition($listenerId, new DefinitionDecorator('uma.hmac.security.authentication.listener'))
             ->replaceArgument(0, $config['apikey_header'])
             ->replaceArgument(3, new Reference($defaultEntryPoint, ContainerInterface::NULL_ON_INVALID_REFERENCE));
+
+        if (isset($config['inspector_id'])) {
+            $verifierId = 'security.authentication.verifier.hmac.'.$id;
+            $inspectorRef = new Reference($config['inspector_id']);
+
+            $container
+                ->setDefinition($verifierId, new Definition(Verifier::class, [$inspectorRef]));
+
+            $container
+                ->getDefinition($providerId)
+                ->replaceArgument(3, new Reference($verifierId));
+        }
 
         return [$providerId, $listenerId, $defaultEntryPoint];
     }
@@ -57,6 +71,7 @@ class HmacFactory implements SecurityFactoryInterface
         $builder
             ->children()
                 ->scalarNode('apikey_header')->defaultValue('Api-Key')->end()
+                ->scalarNode('inspector_id')->end()
             ->end();
     }
 }

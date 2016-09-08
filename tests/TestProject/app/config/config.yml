@@ -12,3 +12,5 @@ services:
         class: TestProject\AppBundle\Security\TestUserProvider
     testapp.entry_point:
         class: TestProject\AppBundle\Security\CustomEntryPoint
+    testapp.inspector:
+        class: TestProject\AppBundle\Security\CustomInspector

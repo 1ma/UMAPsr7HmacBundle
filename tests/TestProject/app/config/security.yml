@@ -8,6 +8,7 @@ security:
             pattern: ^/
             hmac:
                 apikey_header: 'X-Api-Key'
+                inspector_id: testapp.inspector
             entry_point: testapp.entry_point
             provider: default_provider
             stateless: true

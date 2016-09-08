@@ -21,8 +21,9 @@ class TestKernel extends Kernel
         return [
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Symfony\Bundle\SecurityBundle\SecurityBundle(),
-            new TestProject\AppBundle\AppBundle(),
             new UMA\Psr7HmacBundle\UMAPsr7HmacBundle(),
+
+            new TestProject\AppBundle\AppBundle(),
         ];
     }
 

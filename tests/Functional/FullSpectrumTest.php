@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use TestProject\AppBundle\Entity\TestUser;
 use UMA\Psr7Hmac\Signer;
+use UMA\Psr7Hmac\Specification;
 
 class FullSpectrumTest extends \PHPUnit_Framework_TestCase
 {
@@ -42,19 +43,23 @@ class FullSpectrumTest extends \PHPUnit_Framework_TestCase
         $sfResponse = $this->doRequest($sfRequest);
 
         $this->assertSame(402, $sfResponse->getStatusCode());
+        $this->assertSame('"This is a custom error response defined by the bundle user"', $sfResponse->getContent());
     }
 
     public function unauthorizedRequestProvider()
     {
-        $baseRequest = new ServerRequest('GET', 'localhost:8000');
+        $baseRequest = new ServerRequest('GET', 'http://testproject.com');
         $withApiKey = $baseRequest->withHeader('X-Api-Key', TestUser::TEST_APIKEY);
         $withBadApiKey = $baseRequest->withHeader('X-Api-Key', 'made-up-key');
         $signedBaseRequest = (new Signer(TestUser::TEST_SECRET))->sign($baseRequest);
+        $brokenSignature = (new Signer(TestUser::TEST_SECRET))->sign($withApiKey)
+            ->withHeader(Specification::AUTH_HEADER, 'HMAC-SHA256 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=');
 
         return [
             'no Api-Key header nor signed' => [$baseRequest],
             'no Api-Key header, signed' => [$signedBaseRequest],
             'with Api-Key header but not signed' => [$withApiKey],
+            'with Api-Key header and broken signature' => [$brokenSignature],
             'with bogus Api-Key' => [$withBadApiKey],
         ];
     }
