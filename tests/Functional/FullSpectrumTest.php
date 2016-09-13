@@ -18,7 +18,12 @@ class FullSpectrumTest extends \PHPUnit_Framework_TestCase
      */
     public function authenticatedRequest()
     {
-        $request = new ServerRequest('GET', 'http://testproject.com', ['X-Api-Key' => TestUser::TEST_APIKEY]);
+        $request = new ServerRequest(
+            'GET', 'http://testproject.com/test',
+            ['X-Api-Key' => TestUser::TEST_APIKEY],
+            null, '1.1',
+            ['REQUEST_URI' => '/test']  // temporary fix. see https://github.com/symfony/psr-http-message-bridge/issues/16
+        );
 
         $signedRequest = (new Signer(TestUser::TEST_SECRET))->sign($request);
 
@@ -48,7 +53,7 @@ class FullSpectrumTest extends \PHPUnit_Framework_TestCase
 
     public function unauthorizedRequestProvider()
     {
-        $baseRequest = new ServerRequest('GET', 'http://testproject.com');
+        $baseRequest = new ServerRequest('GET', 'http://testproject.com/test', [], null, '1.1', ['REQUEST_URI' => '/test']);
         $withApiKey = $baseRequest->withHeader('X-Api-Key', TestUser::TEST_APIKEY);
         $withBadApiKey = $baseRequest->withHeader('X-Api-Key', 'made-up-key');
         $signedBaseRequest = (new Signer(TestUser::TEST_SECRET))->sign($baseRequest);
