@@ -14,7 +14,7 @@
         "symfony/config": "^2.7|^3.0",
         "symfony/dependency-injection": "^2.7|^3.0",
         "symfony/http-kernel": "^2.7|^3.0",
-        "symfony/psr-http-message-bridge": "^0.2.0",
+        "symfony/psr-http-message-bridge": "^0.4.0",
         "symfony/security-bundle": "^2.7|^3.0",
         "uma/psr7-hmac": "^0.5.1",
         "zendframework/zend-diactoros": "^1.3"
