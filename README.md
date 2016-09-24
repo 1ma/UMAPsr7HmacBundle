@@ -162,7 +162,7 @@ through Composer) and hold an API key and a shared secret from one of the applic
 
 ### Server side
 1. When the server receives the request it extracts its `Api-Key` header and looks for an ApiUser with a matching key.
-2. If it finds one, it retrieves its shared secret from the database and attempts to produce the same signature that was present in the request.
+2. If it finds one, it retrieves the user from the database and attempts to produce the same signature that was present in the request using his shared secret.
 3. If the signatures match the authentication is successful,the request proceeds to the controller and the involved API user will be available through the `Controller::getUser()` helper and/or Symfony's `TokenStorage` service.
 4. If any of the above 3 steps fails, the bundle arranges an 401 Unauthorized response on behalf of the application and the controller is never reached.
 
@@ -268,7 +268,7 @@ Set it at `apikey_header` under the `hmac` key in your `security.yml` file. Boom
 
 ### Customize the error response
 
-By default the bundle will return a laconic "401 Unauthorized" response for
+By default the bundle will return a laconic `401 Unauthorized` response for
 every authentication error that happens inside an hmac firewall.
 
 However, Symfony's Security Component has a little known feature called [entry points](http://symfony.com/doc/current/components/security/firewall.html#entry-points) that are nothing more than implementations of the [AuthenticationEntryPointInterface](http://api.symfony.com/3.1/Symfony/Component/Security/Http/EntryPoint/AuthenticationEntryPointInterface.html)
@@ -282,3 +282,22 @@ and let you do just that.
             stateless: true
             entry_point: my_entry_point_id
 ```
+
+## FAQ
+
+### I don't like long, random API keys
+
+Well, then just return anything you want in the `getApiKey()` method from your user, for instance an email or whatever.
+Just make sure that these "API keys" are unique between all users, maybe even at the database level using UNIQUE constraints.
+
+### Shouldn't you store a hash of the shared secret in the server database, like you would do with a regular password?
+
+That'd be kinda nice, but you can't.
+
+The only reason you get to store user passwords as cryptographic hashes is because your application does not actually
+need their _content_, rather it just need to check that the stored password is the same that the one received during a
+login attempt, and to do that you can just compare their hashes. On the other hand the contents of a shared secret are
+actually needed in order to calculate an HMAC signature.
+
+On a brighter note, machine-generated random shared secrets are not nearly as sensitive as user-provided passwords that
+are potentially reused all over the internet, so the extra hassle of hashing them may not even be warranted.
