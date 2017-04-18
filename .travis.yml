@@ -1,18 +1,17 @@
 language: php
 
 php:
-  - '5.5'
   - '5.6'
   - '7.0'
   - hhvm
   - nightly
 
 install:
-  - wget https://phar.phpunit.de/phpunit-old.phar
+  - wget https://phar.phpunit.de/phpunit-5.7.phar
   - composer install
 
 script:
-  - php phpunit-old.phar
+  - php phpunit-5.7.phar
 
 notifications:
   email: false
