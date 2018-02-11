@@ -3,15 +3,14 @@ language: php
 php:
   - '5.6'
   - '7.0'
-  - hhvm
-  - nightly
+  - '7.1'
 
 install:
-  - wget https://phar.phpunit.de/phpunit-5.7.phar
+  - wget https://phar.phpunit.de/phpunit-5.phar
   - composer install
 
 script:
-  - php phpunit-5.7.phar
+  - php phpunit-5.phar
 
 notifications:
   email: false

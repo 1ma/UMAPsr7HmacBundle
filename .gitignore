@@ -5,3 +5,4 @@
 !/tests/TestProject/var/cache/.gitkeep
 !/tests/TestProject/var/logs/.gitkeep
 /vendor/
+*.phar
